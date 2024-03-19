@@ -1,16 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gorilla/mux"
-	"log"
-	"net/http"
+	"github.com/Dubjay18/green-lit/app"
+	"github.com/Dubjay18/green-lit/logger"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-	r := mux.NewRouter()
-
-	log.Fatal(http.ListenAndServe(":8080", r))
-
+	//log.Println("Starting the application...")
+	app.GetEnvVar()
+	logger.Info("Starting the application...")
+	app.SanityCheck()
+	app.Start()
 }
