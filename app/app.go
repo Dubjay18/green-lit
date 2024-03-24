@@ -53,8 +53,12 @@ func Start() {
 	dbClient := getDbClient()
 	articleRepository := domain.NewArticleRepositoryDB(dbClient)
 	articleService := service.NewArticleService(articleRepository)
+	userRepository := domain.NewUserRepositoryDB(dbClient)
+	userService := service.NewUserService(userRepository)
+	userHandler := UserHandler{service: userService}
 	articleHandler := ArticleHandler{service: articleService}
 	router := mux.NewRouter()
+	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.GetAllArticles).Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), router))
 }
