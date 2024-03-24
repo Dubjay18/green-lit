@@ -6,11 +6,11 @@ import (
 )
 
 type Article struct {
-	ID          int    `json:"article_id"`
-	Title       string `json:"title"`
-	Content     string `json:"content"`
-	PublishedAt string `json:"published_at"`
-	Author      string `json:"author"`
+	ID          int    `json:"article_id"db:"article_id"`
+	Title       string `json:"title"db:"title""`
+	Content     string `json:"content"db:"content"`
+	PublishedAt string `json:"published_at"db:"published_at"`
+	Author      string `json:"author"db:"author_id"`
 }
 
 type ArticleRepository interface {
