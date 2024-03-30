@@ -15,6 +15,8 @@ type Article struct {
 
 type ArticleRepository interface {
 	GetAll() ([]Article, *errs.AppError)
+	GetByID(id int) (*Article, *errs.AppError)
+	GetByUserID(id int) ([]Article, *errs.AppError)
 }
 
 func (a Article) ToDto() dto.ArticleResponse {

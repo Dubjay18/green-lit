@@ -60,6 +60,7 @@ func Start() {
 	router := mux.NewRouter()
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
+	router.HandleFunc("/articles/users/{id:[0-9]+}", articleHandler.GetArticlesByUser).Methods(http.MethodGet)
 	router.HandleFunc("/users", userHandler.GetAllUsers).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.GetAllArticles).Methods(http.MethodGet)
 	router.HandleFunc("/articles/{id:[0-9]+}", articleHandler.GetArticle).Methods(http.MethodGet)

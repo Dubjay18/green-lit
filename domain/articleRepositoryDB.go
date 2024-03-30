@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	queryGetAllArticles = "SELECT * FROM articles"
-	queryGetArticleByID = "SELECT * FROM articles WHERE id=$1"
+	queryGetAllArticles     = "SELECT * FROM articles"
+	queryGetArticleByID     = "SELECT * FROM articles WHERE id=$1"
+	queryGetArticleByUserID = "SELECT * FROM articles WHERE author_id=$1"
 )
 
 type ArticleRepositoryDB struct {
@@ -37,6 +38,18 @@ func (r ArticleRepositoryDB) GetByID(id int) (*dto.ArticleResponse, *errs.AppErr
 	return &article, nil
 
 }
+
+func (r ArticleRepositoryDB) GetByUserID(id int) ([]Article, *errs.AppError) {
+	var articles []Article
+	var err error
+	err = r.db.Select(&articles, queryGetUserByID, id)
+	if err != nil {
+		logger.Error("Error while querying articles" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+	return articles, nil
+}
+
 func NewArticleRepositoryDB(dbClient *sqlx.DB) ArticleRepositoryDB {
 	return ArticleRepositoryDB{dbClient}
 }

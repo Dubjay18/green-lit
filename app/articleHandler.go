@@ -36,3 +36,17 @@ func (h ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func (h ArticleHandler) GetArticlesByUser(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	if i, err := strconv.Atoi(id); err != nil {
+		articles, err := h.service.GetByUserID(i)
+		if err != nil {
+			utils.WriteJson(w, err.Code, err.AsMessage())
+			return
+		}
+		utils.WriteJson(w, http.StatusOK, articles)
+	} else {
+		utils.WriteJson(w, http.StatusBadRequest, "Invalid id")
+	}
+}

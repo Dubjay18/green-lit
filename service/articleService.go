@@ -10,6 +10,7 @@ import (
 type ArticleService interface {
 	GetAllArticles() ([]dto.ArticleResponse, *errs.AppError)
 	GetByID(id int) (*dto.ArticleResponse, *errs.AppError)
+	GetByUserID(id int) ([]dto.ArticleResponse, *errs.AppError)
 }
 
 type DefaultArticleService struct {
@@ -39,6 +40,18 @@ func (s DefaultArticleService) GetByID(id int) (*dto.ArticleResponse, *errs.AppE
 		return nil, errs.NewNotFoundError("Article not found")
 	}
 	return article, nil
+}
+
+func (s DefaultArticleService) GetByUserID(id int) ([]dto.ArticleResponse, *errs.AppError) {
+	articles, err := s.repo.GetByUserID(id)
+	if err != nil {
+		return nil, err
+	}
+	response := make([]dto.ArticleResponse, 0)
+	for _, a := range articles {
+		response = append(response, a.ToDto())
+	}
+	return response, nil
 }
 
 func NewArticleService(repo domain.ArticleRepositoryDB) DefaultArticleService {
