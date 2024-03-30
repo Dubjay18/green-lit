@@ -10,6 +10,11 @@ import (
 	"os"
 )
 
+const (
+	queryGetAllUsers = "SELECT id, full_name,email, gender FROM users"
+	queryGetUserByID = "SELECT id, full_name,email,gender FROM users WHERE id=$1"
+)
+
 type UserRepositoryDB struct {
 	db *sqlx.DB
 }
@@ -40,12 +45,22 @@ func (r UserRepositoryDB) Populate() *errs.AppError {
 func (r UserRepositoryDB) GetAll() ([]dto.UserResponse, *errs.AppError) {
 	var users []dto.UserResponse
 	var err error
-	err = r.db.Select(&users, "SELECT id, full_name,email,gender FROM users")
+	err = r.db.Select(&users, queryGetAllUsers)
 	if err != nil {
-		logger.Error("Error while quering users" + err.Error())
+		logger.Error("Error while querying users" + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 	return users, nil
+}
+
+func (r UserRepositoryDB) GetByID(id int) (*dto.UserResponse, *errs.AppError) {
+	var user dto.UserResponse
+	err := r.db.Get(&user, queryGetUserByID, id)
+	if err != nil {
+		logger.Error("Error while querying user" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+	return &user, nil
 }
 
 func NewUserRepositoryDB(dbClient *sqlx.DB) UserRepositoryDB {

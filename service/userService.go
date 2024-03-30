@@ -9,6 +9,7 @@ import (
 type UserService interface {
 	PopulateUsers() *errs.AppError
 	GetAllUsers() ([]dto.UserResponse, *errs.AppError)
+	GetByID(id int) (*dto.UserResponse, *errs.AppError)
 }
 
 type DefaultUserService struct {
@@ -30,6 +31,17 @@ func (s DefaultUserService) GetAllUsers() ([]dto.UserResponse, *errs.AppError) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (s DefaultUserService) GetByID(id int) (*dto.UserResponse, *errs.AppError) {
+	user, err := s.repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errs.NewNotFoundError("User not found")
+	}
+	return user, nil
 }
 
 func NewUserService(repo domain.UserRepositoryDB) DefaultUserService {
