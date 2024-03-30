@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
 	"github.com/Dubjay18/green-lit/logger"
 	"github.com/jmoiron/sqlx"
@@ -8,6 +9,7 @@ import (
 
 const (
 	queryGetAllArticles = "SELECT * FROM articles"
+	queryGetArticleByID = "SELECT * FROM articles WHERE id=$1"
 )
 
 type ArticleRepositoryDB struct {
@@ -25,6 +27,16 @@ func (r ArticleRepositoryDB) GetAll() ([]Article, *errs.AppError) {
 	return articles, nil
 }
 
+func (r ArticleRepositoryDB) GetByID(id int) (*dto.ArticleResponse, *errs.AppError) {
+	var article dto.ArticleResponse
+	err := r.db.Get(&article, queryGetArticleByID, id)
+	if err != nil {
+		logger.Error("Error while querying article" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+	return &article, nil
+
+}
 func NewArticleRepositoryDB(dbClient *sqlx.DB) ArticleRepositoryDB {
 	return ArticleRepositoryDB{dbClient}
 }

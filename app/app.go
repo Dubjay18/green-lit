@@ -62,5 +62,6 @@ func Start() {
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
 	router.HandleFunc("/users", userHandler.GetAllUsers).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.GetAllArticles).Methods(http.MethodGet)
+	router.HandleFunc("/articles/{id:[0-9]+}", articleHandler.GetArticle).Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), router))
 }

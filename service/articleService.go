@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/Dubjay18/green-lit/domain"
 	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
@@ -8,6 +9,7 @@ import (
 
 type ArticleService interface {
 	GetAllArticles() ([]dto.ArticleResponse, *errs.AppError)
+	GetByID(id int) (*dto.ArticleResponse, *errs.AppError)
 }
 
 type DefaultArticleService struct {
@@ -25,6 +27,18 @@ func (s DefaultArticleService) GetAllArticles() ([]dto.ArticleResponse, *errs.Ap
 	}
 	return response, nil
 
+}
+
+func (s DefaultArticleService) GetByID(id int) (*dto.ArticleResponse, *errs.AppError) {
+	article, err := s.repo.GetByID(id)
+	if err != nil {
+		fmt.Sprintf("Error while getting article: %s", err.Message)
+		return nil, err
+	}
+	if article == nil {
+		return nil, errs.NewNotFoundError("Article not found")
+	}
+	return article, nil
 }
 
 func NewArticleService(repo domain.ArticleRepositoryDB) DefaultArticleService {
