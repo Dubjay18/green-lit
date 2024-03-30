@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
 	"github.com/Dubjay18/green-lit/logger"
 	"github.com/gocarina/gocsv"
@@ -34,6 +35,17 @@ func (r UserRepositoryDB) Populate() *errs.AppError {
 		}
 	}
 	return nil
+}
+
+func (r UserRepositoryDB) GetAll() ([]dto.UserResponse, *errs.AppError) {
+	var users []dto.UserResponse
+	var err error
+	err = r.db.Select(&users, "SELECT id, full_name,email,gender FROM users")
+	if err != nil {
+		logger.Error("Error while quering users" + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+	return users, nil
 }
 
 func NewUserRepositoryDB(dbClient *sqlx.DB) UserRepositoryDB {

@@ -18,3 +18,12 @@ func (h UserHandler) PopulateUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.WriteJson(w, http.StatusOK, "Users populated")
 }
+
+func (h UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := h.service.GetAllUsers()
+	if err != nil {
+		utils.WriteJson(w, err.Code, err.AsMessage())
+		return
+	}
+	utils.WriteJson(w, http.StatusOK, users)
+}

@@ -1,5 +1,10 @@
 package domain
 
+import (
+	"github.com/Dubjay18/green-lit/dto"
+	"github.com/Dubjay18/green-lit/errs"
+)
+
 // User represents a user in the system
 type User struct {
 	ID       int    `json:"id"db:"id"csv:"id"`
@@ -10,6 +15,8 @@ type User struct {
 	Gender string `json:"gender"db:"gender"csv:"gender"`
 }
 
-type userArticle struct {
-	ID int `json:"id"db:"id"csv:"id"`
+// UserRepository defines the methods that any user repository should implement
+type UserRepository interface {
+	Populate() *errs.AppError
+	GetAll() ([]dto.UserResponse, *errs.AppError)
 }

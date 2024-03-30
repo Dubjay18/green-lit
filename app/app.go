@@ -59,6 +59,7 @@ func Start() {
 	articleHandler := ArticleHandler{service: articleService}
 	router := mux.NewRouter()
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
+	router.HandleFunc("/users", userHandler.GetAllUsers).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.GetAllArticles).Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), router))
 }
