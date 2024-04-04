@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	boldPattern   = regexp.MustCompile(`\[b\](.*?)\[\/b\]`)
-	italicPattern = regexp.MustCompile(`\[i\](.*?)\[\/i\]`)
+	boldPattern    = regexp.MustCompile(`\[b\](.*?)\[\/b\]`)
+	italicPattern  = regexp.MustCompile(`\[i\](.*?)\[\/i\]`)
+	newlinePattern = regexp.MustCompile(`\\n`)
 	// Add more patterns for other formatting...
 )
 
@@ -30,13 +31,10 @@ func DecodeJson(r *http.Request, i interface{}) *errs.AppError {
 }
 
 func ParseRichText(content string) string {
-	// Replace bold formatting
+
+	content = newlinePattern.ReplaceAllString(content, "<br>")
 	content = boldPattern.ReplaceAllString(content, "<strong>$1</strong>")
-
-	// Replace italic formatting
 	content = italicPattern.ReplaceAllString(content, "<em>$1</em>")
-
-	// ... add replacements for other formatting
 
 	return content
 }

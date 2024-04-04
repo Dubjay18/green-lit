@@ -24,7 +24,7 @@ func (r ArticleRepositoryDB) GetAll() ([]Article, *errs.AppError) {
 	var err error
 	err = r.db.Select(&articles, queryGetAllArticles)
 	if err != nil {
-		logger.Error("Error while quering articles" + err.Error())
+		logger.Error("Error while querying articles" + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 	return articles, nil

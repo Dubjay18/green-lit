@@ -19,6 +19,9 @@ func (h ArticleHandler) GetAllArticles(w http.ResponseWriter, r *http.Request) {
 		utils.WriteJson(w, err.Code, err.AsMessage())
 		return
 	}
+	for i, _ := range articles {
+		articles[i].Content = utils.ParseRichText(articles[i].Content)
+	}
 	utils.WriteJson(w, http.StatusOK, articles)
 
 }
@@ -46,6 +49,9 @@ func (h ArticleHandler) GetArticlesByUser(w http.ResponseWriter, r *http.Request
 		if err != nil {
 			utils.WriteJson(w, err.Code, err.AsMessage())
 			return
+		}
+		for i, _ := range articles {
+			articles[i].Content = utils.ParseRichText(articles[i].Content)
 		}
 		utils.WriteJson(w, http.StatusOK, articles)
 	} else {
