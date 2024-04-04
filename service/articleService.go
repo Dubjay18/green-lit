@@ -5,12 +5,14 @@ import (
 	"github.com/Dubjay18/green-lit/domain"
 	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
+	"time"
 )
 
 type ArticleService interface {
 	GetAllArticles() ([]dto.ArticleResponse, *errs.AppError)
 	GetByID(id int) (*dto.ArticleResponse, *errs.AppError)
 	GetByUserID(id int) ([]dto.ArticleResponse, *errs.AppError)
+	CreateArticle(req domain.ArticleRequest) (*dto.ArticleResponse, *errs.AppError)
 }
 
 type DefaultArticleService struct {
@@ -33,7 +35,7 @@ func (s DefaultArticleService) GetAllArticles() ([]dto.ArticleResponse, *errs.Ap
 func (s DefaultArticleService) GetByID(id int) (*dto.ArticleResponse, *errs.AppError) {
 	article, err := s.repo.GetByID(id)
 	if err != nil {
-		fmt.Sprintf("Error while getting article: %s", err.Message)
+		_ = fmt.Sprintf("Error while getting article: %s", err.Message)
 		return nil, err
 	}
 	if article == nil {
@@ -52,6 +54,22 @@ func (s DefaultArticleService) GetByUserID(id int) ([]dto.ArticleResponse, *errs
 		response = append(response, a.ToDto())
 	}
 	return response, nil
+}
+
+func (s DefaultArticleService) CreateArticle(req domain.ArticleRequest) (*dto.ArticleResponse, *errs.AppError) {
+	article := domain.Article{
+		Title:       req.Title,
+		Content:     req.Content,
+		Author:      req.Author,
+		ID:          "",
+		PublishedAt: time.Now().Format("2006-01-02 15:04:05"),
+	}
+	newArticle, err := s.repo.CreateArticle(article)
+	if err != nil {
+		return nil, err
+	}
+	resp := newArticle.ToDto()
+	return &resp, nil
 }
 
 func NewArticleService(repo domain.ArticleRepositoryDB) DefaultArticleService {

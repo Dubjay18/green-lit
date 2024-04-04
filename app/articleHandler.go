@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/Dubjay18/green-lit/domain"
 	"github.com/Dubjay18/green-lit/service"
 	"github.com/Dubjay18/green-lit/utils"
 	"github.com/gorilla/mux"
@@ -30,6 +31,7 @@ func (h ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
 			utils.WriteJson(w, err.Code, err.AsMessage())
 			return
 		}
+		article.Content = utils.ParseRichText(article.Content)
 		utils.WriteJson(w, http.StatusOK, article)
 	} else {
 		utils.WriteJson(w, http.StatusBadRequest, "Invalid id")
@@ -49,4 +51,18 @@ func (h ArticleHandler) GetArticlesByUser(w http.ResponseWriter, r *http.Request
 	} else {
 		utils.WriteJson(w, http.StatusBadRequest, "Invalid id")
 	}
+}
+
+func (h ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
+	var articleRequest domain.ArticleRequest
+	if err := utils.DecodeJson(r, &articleRequest); err != nil {
+		utils.WriteJson(w, err.Code, err.AsMessage())
+		return
+	}
+	resp, err := h.service.CreateArticle(articleRequest)
+	if err != nil {
+		utils.WriteJson(w, err.Code, err.AsMessage())
+		return
+	}
+	utils.WriteJson(w, http.StatusCreated, resp)
 }

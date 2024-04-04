@@ -6,17 +6,24 @@ import (
 )
 
 type Article struct {
-	ID          int    `json:"article_id"db:"article_id"`
+	ID          string `json:"article_id"db:"article_id"`
 	Title       string `json:"title"db:"title""`
 	Content     string `json:"content"db:"content"`
 	PublishedAt string `json:"published_at"db:"published_at"`
-	Author      string `json:"author"db:"author_id"`
+	Author      int    `json:"author"db:"author_id"`
+}
+
+type ArticleRequest struct {
+	Title   string `json:"title"db:"title""`
+	Content string `json:"content"db:"content"`
+	Author  int    `json:"author"db:"author_id"`
 }
 
 type ArticleRepository interface {
 	GetAll() ([]Article, *errs.AppError)
 	GetByID(id int) (*Article, *errs.AppError)
 	GetByUserID(id int) ([]Article, *errs.AppError)
+	CreateArticle(article ArticleRequest) *errs.AppError
 }
 
 func (a Article) ToDto() dto.ArticleResponse {
