@@ -3,6 +3,7 @@ module github.com/Dubjay18/green-lit
 go 1.22rc2
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gocarina/gocsv v0.0.0-20231116093920-b87c2d0e983a // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/jmoiron/sqlx v1.3.5 // indirect
