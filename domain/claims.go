@@ -34,15 +34,15 @@ func (c AccessTokenClaims) IsAdminRole() bool {
 
 }
 
-func (c AccessTokenClaims) isOwner(userId string) bool {
+func (c AccessTokenClaims) IsOwner(userId string) bool {
 	return c.UserId == userId
 }
 
-func (c AccessTokenClaims) isRequestVerifiedWithTokenClaims(urlParams map[string]string) bool {
+func (c AccessTokenClaims) IsRequestVerifiedWithTokenClaims(urlParams map[string]string) bool {
 	return c.UserId == urlParams["user_id"]
 }
 
-func (c AccessTokenClaims) isRequestVerifiedWithTokenClaimsAndRole(urlParams map[string]string) bool {
+func (c AccessTokenClaims) IsRequestVerifiedWithTokenClaimsAndRole(urlParams map[string]string) bool {
 	return c.UserId == urlParams["user_id"] && c.Role == adminRole
 }
 

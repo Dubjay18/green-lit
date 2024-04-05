@@ -52,11 +52,14 @@ func Start() {
 	SanityCheck()
 	dbClient := getDbClient()
 	articleRepository := domain.NewArticleRepositoryDB(dbClient)
+	authRepository := domain.NewAuthRepositoryDB(dbClient)
 	articleService := service.NewArticleService(articleRepository)
+	authService := service.NewLoginService(authRepository, domain.GetRolePermissions())
 	userRepository := domain.NewUserRepositoryDB(dbClient)
 	userService := service.NewUserService(userRepository)
 	userHandler := UserHandler{service: userService}
 	articleHandler := ArticleHandler{service: articleService}
+	authHandler := AuthHandler{service: authService}
 	router := mux.NewRouter()
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
@@ -65,5 +68,7 @@ func Start() {
 	router.HandleFunc("/articles", articleHandler.GetAllArticles).Methods(http.MethodGet)
 	router.HandleFunc("/articles/{id:[0-9]+}", articleHandler.GetArticle).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.CreateArticle).Methods(http.MethodPost)
+	router.HandleFunc("/auth-signIn", authHandler.Login).Methods(http.MethodPost)
+
 	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), router))
 }
