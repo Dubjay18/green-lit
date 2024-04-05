@@ -12,7 +12,7 @@ type ArticleService interface {
 	GetAllArticles() ([]dto.ArticleResponse, *errs.AppError)
 	GetByID(id int) (*dto.ArticleResponse, *errs.AppError)
 	GetByUserID(id int) ([]dto.ArticleResponse, *errs.AppError)
-	CreateArticle(req domain.ArticleRequest) (*dto.ArticleResponse, *errs.AppError)
+	CreateArticle(req dto.NewArticleRequest) (*dto.ArticleResponse, *errs.AppError)
 }
 
 type DefaultArticleService struct {
@@ -56,7 +56,7 @@ func (s DefaultArticleService) GetByUserID(id int) ([]dto.ArticleResponse, *errs
 	return response, nil
 }
 
-func (s DefaultArticleService) CreateArticle(req domain.ArticleRequest) (*dto.ArticleResponse, *errs.AppError) {
+func (s DefaultArticleService) CreateArticle(req dto.NewArticleRequest) (*dto.ArticleResponse, *errs.AppError) {
 	article := domain.Article{
 		Title:       req.Title,
 		Content:     req.Content,

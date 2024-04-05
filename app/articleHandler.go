@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/Dubjay18/green-lit/domain"
+	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/service"
 	"github.com/Dubjay18/green-lit/utils"
 	"github.com/gorilla/mux"
@@ -60,7 +60,7 @@ func (h ArticleHandler) GetArticlesByUser(w http.ResponseWriter, r *http.Request
 }
 
 func (h ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
-	var articleRequest domain.ArticleRequest
+	var articleRequest dto.NewArticleRequest
 	if err := utils.DecodeJson(r, &articleRequest); err != nil {
 		utils.WriteJson(w, err.Code, err.AsMessage())
 		return
