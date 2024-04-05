@@ -18,3 +18,20 @@ func (a AuthToken) NewAccessToken() (string, *errs.AppError) {
 	}
 	return signedString, nil
 }
+
+func (a AuthToken) NewRefreshToken() (string, *errs.AppError) {
+	c := a.token.Claims.(AccessTokenClaims)
+	refreshClaims := c.RefreshTokenClaims()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	signedString, err := token.SignedString([]byte(HMAC_SAMPLE_SECRET))
+	if err != nil {
+		logger.Error("Failed while signing refresh token: " + err.Error())
+		return "", errs.NewUnexpectedError("cannot generate refresh token")
+	}
+	return signedString, nil
+}
+
+func NewAuthToken(claims AccessTokenClaims) AuthToken {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return AuthToken{token: token}
+}
