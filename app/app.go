@@ -1,8 +1,10 @@
 package app
 
 import (
+	"fmt"
 	"github.com/Dubjay18/green-lit/domain"
 	"github.com/Dubjay18/green-lit/service"
+	"github.com/Dubjay18/green-lit/utils"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
@@ -10,6 +12,7 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -34,16 +37,18 @@ func getDbClient() *sqlx.DB {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
-	constr := "user=" + dbUser + " dbname=" + dbName + " password=" + dbPass + " host=" + dbHost + " port=" + dbPort + " sslmode=disable"
-
+	constr := "user=" + dbUser + " dbname=" + dbName + " password=" + dbPass + " host=" + dbHost + " port=" + dbPort + " sslmode=require"
+	serviceURI := os.Getenv("DATABASE_URL")
+	conn, _ := url.Parse(serviceURI)
+	conn.RawQuery = "sslmode=verify-ca;sslrootcert=ca.pem"
 	db, err := sqlx.Open("postgres", constr)
+
 	if err != nil {
 		panic(err)
 	}
 
 	if err := db.Ping(); err != nil {
 		panic(err)
-
 	}
 	return db
 }
@@ -66,6 +71,10 @@ func Start() {
 		AllowedOrigins: []string{"*"}, // Allow all origins (adjust for production!)
 		// ... add other options like AllowedMethods, AllowedHeaders, etc.
 	})
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Welcome to the Green-Lit API")
+		utils.WriteJson(w, http.StatusOK, "Welcome to the Green-Lit API")
+	}).Methods(http.MethodGet)
 
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
