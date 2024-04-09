@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -61,6 +62,11 @@ func Start() {
 	articleHandler := ArticleHandler{service: articleService}
 	authHandler := AuthHandler{service: authService}
 	router := mux.NewRouter()
+	corsOptions := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // Allow all origins (adjust for production!)
+		// ... add other options like AllowedMethods, AllowedHeaders, etc.
+	})
+
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
 	router.HandleFunc("/articles/users/{id:[0-9]+}", articleHandler.GetArticlesByUser).Methods(http.MethodGet)
@@ -69,6 +75,6 @@ func Start() {
 	router.HandleFunc("/articles/{id:[0-9]+}", articleHandler.GetArticle).Methods(http.MethodGet)
 	router.HandleFunc("/articles", articleHandler.CreateArticle).Methods(http.MethodPost)
 	router.HandleFunc("/auth-signIn", authHandler.Login).Methods(http.MethodPost)
-
-	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), router))
+	corsHandler := corsOptions.Handler(router)
+	log.Fatal(http.ListenAndServe(os.Getenv("SERVER_ADDRESS")+":"+os.Getenv("SERVER_PORT"), corsHandler))
 }
