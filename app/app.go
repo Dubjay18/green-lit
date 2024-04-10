@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/Dubjay18/green-lit/domain"
+	"github.com/Dubjay18/green-lit/logger"
 	"github.com/Dubjay18/green-lit/service"
 	"github.com/Dubjay18/green-lit/utils"
 	"github.com/gorilla/mux"
@@ -50,6 +51,7 @@ func getDbClient() *sqlx.DB {
 	if err := db.Ping(); err != nil {
 		panic(err)
 	}
+	logger.Info("Successfully connected to the database")
 	return db
 }
 
