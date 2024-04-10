@@ -20,7 +20,7 @@ func GetEnvVar() {
 	err := godotenv.Load()
 
 	if err != nil {
-		log.Fatal(err)
+		println("not")
 	}
 
 }
