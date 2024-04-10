@@ -27,7 +27,7 @@ func GetEnvVar() {
 }
 
 func SanityCheck() {
-	if os.Getenv("SERVER_ADDRESS") == "" || os.Getenv("SERVER_PORT") == "" {
+	if os.Getenv("SERVER_PORT") == "" {
 		log.Fatal("Environment variables not defined...")
 	}
 }
