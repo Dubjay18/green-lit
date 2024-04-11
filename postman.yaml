@@ -30,6 +30,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+              examples:
+                user:
+                  summary: An example of a user
+                  value:
+                    ID: 1
+                    Email: "test@example.com"
+                    FullName: "Test User"
+                    Gender: "Male"
         '400':
           description: Bad Request (e.g., invalid ID format)
           content:
@@ -76,6 +84,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Article'
+              examples:
+                articles:
+                  summary: An example of articles
+                  value:
+                    - ID: "article1"
+                      Title: "Article 1"
+                      Content: "This is the content of Article 1"
+                      PublishedAt: "2023-01-01"
+                      Author: 1
         '400':
           description: Bad Request (e.g., invalid ID format)
           content:
@@ -136,6 +153,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Article'
+              examples:
+                articles:
+                  summary: An example of articles
+                  value:
+                    - ID: "article1"
+                      Title: "Article 1"
+                      Content: "This is the content of Article 1"
+                      PublishedAt: "2023-01-01"
+                      Author: 1
 
         '500':
           description: Internal Server Error
@@ -187,6 +213,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Article'
+              examples:
+                article:
+                  summary: An example of an article
+                  value:
+                    ID: "article1"
+                    Title: "Article 1"
+                    Content: "This is the content of Article 1"
+                    PublishedAt: "2023-01-01"
+                    Author: 1
   /auth-signIn:
     post:
       summary: Login
@@ -203,8 +238,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Login'
+              examples:
+                login:
+                  summary: An example of a login response
+                  value:
+                    AccessToken: "access_token_example"
+                    RefreshToken: "refresh_token_example"
 
 components:
+  parameters:
+    userId:
+      in: path
+      name: userId
+      required: true
+      schema:
+        type: integer
+        format: int32
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   schemas:
     User:
       type: object
