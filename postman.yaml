@@ -100,10 +100,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  summary: Bad Request
+                  value:
+                    - message: "Bad Request Sent"
         '404':
           description: Not Found (user not found or no articles)
           content:
@@ -191,10 +193,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: 
 
 
           # Add response schema details here (e.g., created Article)
@@ -262,6 +261,13 @@ components:
       in: header
       name: X-API-KEY
   schemas:
+    Error:
+      type: object
+      required:
+        - "message"
+      properties:
+        message:
+          type: string
     User:
       type: object
       properties:
@@ -319,6 +325,7 @@ components:
           type: string
         password:
           type: string
+    
 
 
 # Add additional sections like security if needed
