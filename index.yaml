@@ -34,7 +34,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
         '404':
           description: Not Found (user not found)
@@ -43,7 +43,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
         '500':
           description: Internal Server Error
@@ -52,7 +52,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
   /articles/users/{id}:
     get:
