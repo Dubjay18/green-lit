@@ -1,0 +1,209 @@
+openapi: 3.0.0
+info:
+  title: Green-Lit API
+  description: API for Green-Lit application
+  version: "1.0"
+
+paths:
+  /:
+    get:
+      summary: Welcome message
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: {}
+  /users/{id}:
+    get:
+      summary: Get User by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., User object)
+        '400':
+          description: Bad Request (e.g., invalid ID format)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Not Found (user not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /articles/users/{id}:
+    get:
+      summary: Get Articles by User ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., Article list)
+        '400':
+          description: Bad Request (e.g., invalid ID format)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found (user not found or no articles)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /users:
+    get:
+      summary: Get All Users
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., User list)
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /articles:
+    get:
+      summary: Get All Articles
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., Article list)
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      summary: Create Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewArticleRequest'
+      responses:
+        '201':
+          description: Created
+          # Add response schema details here (e.g., created Article)
+        '400':
+          description: Bad Request (e.g., validation error in request body)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+
+          # Add response schema details here (e.g., created Article)
+  /articles/{id}:
+    get:
+      summary: Get Article by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., Article object)
+  /auth-signIn:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+          # Add response schema details here (e.g., Login response)
+
+components:
+  schemas:
+    NewArticleRequest:
+      type: object
+      required:
+        - title
+        - content
+        - author
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          type: integer
+          format: int32
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+# Add additional sections like security if needed
