@@ -26,7 +26,10 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., User object)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '400':
           description: Bad Request (e.g., invalid ID format)
           content:
@@ -67,7 +70,12 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., Article list)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
         '400':
           description: Bad Request (e.g., invalid ID format)
           content:
@@ -101,7 +109,12 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., User list)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '500':
           description: Internal Server Error
           content:
@@ -117,7 +130,13 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., Article list)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+
         '500':
           description: Internal Server Error
           content:
@@ -164,7 +183,10 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., Article object)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
   /auth-signIn:
     post:
       summary: Login
@@ -177,10 +199,46 @@ paths:
       responses:
         '200':
           description: OK
-          # Add response schema details here (e.g., Login response)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
 
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+        Email:
+          type: string
+        FullName:
+          type: string
+        Gender:
+          type: string
+    Article:
+      type: object
+      properties:
+        ID:
+          type: string
+        Title:
+          type: string
+        Content:
+          type: string
+        PublishedAt:
+          type: string
+        Author:
+          type: integer
+          format: int32
+    Login:
+      type: object
+      properties:
+        AccessToken:
+          type: string
+        RefreshToken:
+          type: string
     NewArticleRequest:
       type: object
       required:
@@ -205,5 +263,6 @@ components:
           type: string
         password:
           type: string
+
 
 # Add additional sections like security if needed
