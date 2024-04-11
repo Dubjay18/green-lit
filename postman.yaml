@@ -3,7 +3,9 @@ info:
   title: Green-Lit API
   description: API for Green-Lit application
   version: "1.0"
-
+  
+servers:
+  - url: https://greenlit-cqvvia6i.b4a.run/
 paths:
   /:
     get:
