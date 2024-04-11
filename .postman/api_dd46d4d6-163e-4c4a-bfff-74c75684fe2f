@@ -13,8 +13,8 @@ rootDirectory = postman/collections
 [config.relations.collections.metaData]
 
 [config.relations.apiDefinition]
-files[] = {"path":"postman.yaml","metaData":{}}
+files[] = {"path":"docs.yaml","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
 type = openapi:3
-rootFiles[] = postman.yaml
+rootFiles[] = docs.yaml
