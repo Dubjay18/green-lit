@@ -28,7 +28,10 @@ func (h ArticleHandler) GetAllArticles(w http.ResponseWriter, r *http.Request) {
 
 func (h ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
-	if i, err := strconv.Atoi(id); err != nil {
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		utils.WriteJson(w, http.StatusBadRequest, "Invalid id")
+	} else {
 		article, err := h.service.GetByID(i)
 		if err != nil {
 			utils.WriteJson(w, err.Code, err.AsMessage())
@@ -36,8 +39,6 @@ func (h ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
 		}
 		article.Content = utils.ParseRichText(article.Content)
 		utils.WriteJson(w, http.StatusOK, article)
-	} else {
-		utils.WriteJson(w, http.StatusBadRequest, "Invalid id")
 	}
 
 }

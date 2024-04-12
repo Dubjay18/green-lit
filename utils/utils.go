@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/Dubjay18/green-lit/errs"
 	"golang.org/x/crypto/bcrypt"
+	"math/rand/v2"
 	"net/http"
 	"regexp"
 )
@@ -48,4 +49,22 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func GetUUID() (int, error) {
+	minValue := 1000
+	maxValue := 99999
+	//if min > max {
+	//	return 0, fmt.Errorf("min (%d) cannot be greater than max (%d)", min, max)
+	//}
+
+	// Create a big.Int representing the difference between max and min
+	maxBigInt := int64(maxValue - minValue)
+
+	// Generate a random number less than the difference
+	randomInt := rand.IntN(int(maxBigInt))
+
+	// Convert the random big.Int to an integer and add the minimum value to get the final result within the range
+	return randomInt + minValue, nil
+
 }

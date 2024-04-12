@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
 	"github.com/Dubjay18/green-lit/logger"
@@ -10,7 +11,7 @@ import (
 
 const (
 	queryGetAllArticles     = "SELECT * FROM articles"
-	queryGetArticleByID     = "SELECT * FROM articles WHERE id=$1"
+	queryGetArticleByID     = "SELECT * FROM articles WHERE article_id=$1"
 	queryGetArticleByUserID = "SELECT * FROM articles WHERE author_id=$1"
 	queryCreateArticle      = "INSERT INTO articles (title, content, published_at, author_id) VALUES ($1, $2, $3, $4) RETURNING article_id"
 )
@@ -72,6 +73,7 @@ func (r ArticleRepositoryDB) CreateArticle(article Article) (*Article, *errs.App
 		logger.Error("Error while creating article")
 		return nil, errs.NewUnexpectedError("Error while creating article")
 	}
+	fmt.Println(strconv.FormatInt(lastId, 10), "sjjsjs")
 	article.ID = strconv.FormatInt(lastId, 10)
 	return &article, nil
 }
