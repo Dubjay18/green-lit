@@ -6,7 +6,6 @@ import (
 	"github.com/Dubjay18/green-lit/dto"
 	"github.com/Dubjay18/green-lit/errs"
 	"github.com/Dubjay18/green-lit/logger"
-	"github.com/Dubjay18/green-lit/utils"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -24,13 +23,12 @@ func (s DefaultAuthService) Login(req dto.LoginRequest) (*dto.LoginResponse, *er
 	var appErr *errs.AppError
 	var login *domain.Login
 
-	hashedPassword, err := utils.HashPassword(req.Password)
-	if err != nil {
-		return nil, errs.NewAuthenticationError("Invalid Email or Password")
+	//if err != nil {
+	//	return nil, errs.NewAuthenticationError("Invalid Email or Password")
+	//
+	//}
 
-	}
-
-	if login, appErr = s.repo.FindById(req.Email, hashedPassword); appErr != nil {
+	if login, appErr = s.repo.FindById(req.Email, req.Password); appErr != nil {
 		return nil, appErr
 	}
 
@@ -47,20 +45,20 @@ func (s DefaultAuthService) Login(req dto.LoginRequest) (*dto.LoginResponse, *er
 	}
 
 	// Create an instance of the EmailService
-	emailService := NewEmailService(domain.NewEmailRepositoryDB())
-
-	// Create an Email struct
-	email := domain.Email{
-		To:       req.Email,
-		From:     "no-reply@example.com",
-		Subject:  "Successful Login",
-		Body:     "You have successfully logged in to your account.",
-		Template: "templates/login.html",
-	}
-	if err := emailService.SendEmail(email); err != nil {
-		// Handle error (optional)
-		logger.Error("Error while sending email: " + err.Message)
-	}
+	//emailService := NewEmailService(domain.NewEmailRepositoryDB())
+	//
+	//// Create an Email struct
+	//email := domain.Email{
+	//	To:       req.Email,
+	//	From:     "no-reply@example.com",
+	//	Subject:  "Successful Login",
+	//	Body:     "You have successfully logged in to your account.",
+	//	Template: "templates/login.html",
+	//}
+	//if err := emailService.SendEmail(email); err != nil {
+	//	// Handle error (optional)
+	//	logger.Error("Error while sending email: " + err.Message)
+	//}
 	return &dto.LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 

@@ -19,7 +19,7 @@ type LoginDb struct {
 	Email    string `json:"email"db:"email"`
 	UserId   string `json:"user_id"db:"id"`
 	Role     string `json:"role"db:"role"`
-	Password string `db:"password"`
+	Password string `json:"password"db:"password"`
 }
 
 type AuthRepository interface {
@@ -35,8 +35,10 @@ func (a AuthRepositoryDB) FindById(email string, password string) (*Login, *errs
 	var login Login
 	var dbLogin LoginDb
 	dbLogin.Role = "admin"
+	p, _ := utils.HashPassword("password")
 	hp, _ := utils.HashPassword(password)
 	fmt.Println(hp)
+	fmt.Println(utils.CheckPasswordHash("password", p))
 	fmt.Println(email)
 	err := a.db.Get(&dbLogin, sqlVerifyQry, email)
 	if err != nil {
@@ -49,8 +51,8 @@ func (a AuthRepositoryDB) FindById(email string, password string) (*Login, *errs
 		}
 	}
 	match := utils.CheckPasswordHash(password, dbLogin.Password)
-	fmt.Println(dbLogin, match)
-	if !utils.CheckPasswordHash(password, dbLogin.Password) {
+	fmt.Println(dbLogin, match, password)
+	if !match {
 		return nil, errs.NewAuthenticationError("invalid credentialsde")
 
 	}
