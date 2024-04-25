@@ -30,7 +30,7 @@ func (s DefaultAuthService) Login(req dto.LoginRequest) (*dto.LoginResponse, *er
 
 	}
 
-	if login, appErr = s.repo.FindById(req.Username, hashedPassword); appErr != nil {
+	if login, appErr = s.repo.FindById(req.Email, hashedPassword); appErr != nil {
 		return nil, appErr
 	}
 
@@ -46,6 +46,21 @@ func (s DefaultAuthService) Login(req dto.LoginRequest) (*dto.LoginResponse, *er
 		return nil, appErr
 	}
 
+	// Create an instance of the EmailService
+	emailService := NewEmailService(domain.NewEmailRepositoryDB())
+
+	// Create an Email struct
+	email := domain.Email{
+		To:       req.Email,
+		From:     "no-reply@example.com",
+		Subject:  "Successful Login",
+		Body:     "You have successfully logged in to your account.",
+		Template: "templates/login.html",
+	}
+	if err := emailService.SendEmail(email); err != nil {
+		// Handle error (optional)
+		logger.Error("Error while sending email: " + err.Message)
+	}
 	return &dto.LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 

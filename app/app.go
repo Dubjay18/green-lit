@@ -32,7 +32,7 @@ func SanityCheck() {
 	}
 }
 
-func getDbClient() *sqlx.DB {
+func GetDbClient() *sqlx.DB {
 	dbName := os.Getenv("DB_NAME")
 	dbPass := os.Getenv("DB_PASS")
 	dbHost := os.Getenv("DB_HOST")
@@ -58,7 +58,7 @@ func getDbClient() *sqlx.DB {
 func Start() {
 	GetEnvVar()
 	SanityCheck()
-	dbClient := getDbClient()
+	dbClient := GetDbClient()
 	articleRepository := domain.NewArticleRepositoryDB(dbClient)
 	authRepository := domain.NewAuthRepositoryDB(dbClient)
 	articleService := service.NewArticleService(articleRepository)
