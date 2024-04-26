@@ -2,12 +2,15 @@ package domain
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/Dubjay18/green-lit/errs"
 	"github.com/Dubjay18/green-lit/logger"
 	"github.com/Dubjay18/green-lit/utils"
 	"github.com/jmoiron/sqlx"
+	"net/http"
+	"net/url"
 )
 
 const (
@@ -26,6 +29,7 @@ type AuthRepository interface {
 	FindById(email string, password string) (*Login, *errs.AppError)
 	GenerateAndSaveRefreshTokenToStore(token AuthToken) (string, *errs.AppError)
 	RefreshTokenExists(refreshToken string) *errs.AppError
+	IsAuthorized(token string, routeName string, vars map[string]string) bool
 }
 type AuthRepositoryDB struct {
 	db *sqlx.DB
@@ -94,6 +98,47 @@ func (a AuthRepositoryDB) GenerateAndSaveRefreshTokenToStore(authToken AuthToken
 		return "", errs.NewUnexpectedError("unexpected database error")
 	}
 	return refreshToken, nil
+}
+func (r AuthRepositoryDB) IsAuthorized(token string, routeName string, vars map[string]string) bool {
+
+	u := buildVerifyURL(token, routeName, vars)
+
+	if response, err := http.Get(u); err != nil {
+		fmt.Println("Error while sending..." + err.Error())
+		return false
+	} else {
+		m := map[string]bool{}
+		if err = json.NewDecoder(response.Body).Decode(&m); err != nil {
+			fmt.Println(response)
+			logger.Error("Error while decoding response from auth server:" + err.Error())
+			return false
+		}
+		return m["isAuthorized"]
+	}
+}
+
+/*
+This will generate a url for token verification in the below format
+
+/auth/verify?token={token string}
+
+	&routeName={current route name}
+	&customer_id={customer id from the current route}
+	&account_id={account id from current route if available}
+
+Sample: /auth/verify?token=aaaa.bbbb.cccc&routeName=MakeTransaction&customer_id=2000&account_id=95470
+*/
+func buildVerifyURL(token string, routeName string, vars map[string]string) string {
+	u := url.URL{Host: "localhost:8080", Path: "/auth/verify", Scheme: "http"}
+	q := u.Query()
+	q.Add("token", token)
+	q.Add("routeName", routeName)
+	for k, v := range vars {
+		q.Add(k, v)
+	}
+	u.RawQuery = q.Encode()
+	fmt.Println(u.String())
+	return u.String()
 }
 func NewAuthRepositoryDB(client *sqlx.DB) AuthRepositoryDB {
 	return AuthRepositoryDB{client}

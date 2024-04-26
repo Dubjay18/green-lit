@@ -77,7 +77,8 @@ func Start() {
 		fmt.Fprint(w, "Welcome to the Green-Lit API")
 		utils.WriteJson(w, http.StatusOK, "Welcome to the Green-Lit API")
 	}).Methods(http.MethodGet)
-
+	am := AuthMiddleware{domain.NewAuthRepositoryDB(dbClient)}
+	router.Use(am.authorizationHandler())
 	router.HandleFunc("/users-populate", userHandler.PopulateUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods(http.MethodGet)
 	router.HandleFunc("/articles/users/{id:[0-9]+}", articleHandler.GetArticlesByUser).Methods(http.MethodGet)
