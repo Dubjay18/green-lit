@@ -1,6 +1,4 @@
-Sure, here's a basic structure for a README file for your project. You can modify it according to your needs.
 
-```markdown
 # Green-Lit API
 
 ## Description
